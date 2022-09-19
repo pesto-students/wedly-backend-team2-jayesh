@@ -12,6 +12,8 @@ import {
   DATABASE_URL,
   SENTRY_DSN_URL,
 } from "./config/index.js";
+import routes from "./src/routes/index.js";
+import ErrorHandler from "./src/middlewares/errorHandler.js";
 
 init({
   environment: APP_ENV,
@@ -44,6 +46,8 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/api", routes);
+
 app.use(
   Handlers.errorHandler({
     shouldHandleError(error) {
@@ -54,6 +58,7 @@ app.use(
     },
   }),
 );
+app.use(ErrorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on: ${port}`); // eslint-disable-line
