@@ -7,6 +7,12 @@ const PersonSchema = new mongoose.Schema(
       required: true,
       type: String,
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
   },
   {
     timestamps: true,
@@ -17,12 +23,6 @@ const PersonSchema = new mongoose.Schema(
 const HostSchema = PersonSchema.discriminator(
   "Host",
   new mongoose.Schema({
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
     password: {
       type: String,
       required: true,
@@ -44,4 +44,4 @@ HostSchema.pre("save", async function (next) {
   }
 });
 
-export const Host = mongoose.model("Host", HostSchema);
+export const Host = mongoose.model("Host", HostSchema, "Host");

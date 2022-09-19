@@ -2,6 +2,7 @@ import express, { json } from "express";
 import mongoose from "mongoose";
 const { connect, connection: _connection } = mongoose;
 import cors from "cors";
+import passport from "passport";
 import cookieParser from "cookie-parser";
 const app = express();
 import { init, Integrations, Handlers } from "@sentry/node";
@@ -47,6 +48,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", routes);
+
+app.use(passport.initialize());
 
 app.use(
   Handlers.errorHandler({
