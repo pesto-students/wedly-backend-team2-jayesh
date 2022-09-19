@@ -1,33 +1,39 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+import express, { json } from "express";
+import mongoose from "mongoose";
+const { connect, connection: _connection } = mongoose;
+import cors from "cors";
+import cookieParser from "cookie-parser";
 const app = express();
-const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
-const { APP_ENV, APP_PORT, DATABASE_URL, SENTRY_DSN_URL } = require("./config");
+import { init, Integrations, Handlers } from "@sentry/node";
+import { Integrations as _Integrations } from "@sentry/tracing";
+import {
+  APP_ENV,
+  APP_PORT,
+  DATABASE_URL,
+  SENTRY_DSN_URL,
+} from "./config/index.js";
 
-Sentry.init({
+init({
   environment: APP_ENV,
   dsn: SENTRY_DSN_URL,
   integrations: [
-    new Sentry.Integrations.Http({ tracing: true }),
-    new Tracing.Integrations.Express({ app }),
+    new Integrations.Http({ tracing: true }),
+    new _Integrations.Express({ app }),
   ],
   tracesSampleRate: 1.0,
 });
 
 const port = APP_PORT || 7000;
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+app.use(Handlers.requestHandler());
+app.use(Handlers.tracingHandler());
 
 app.use(cors());
-app.use(express.json());
+app.use(json());
 app.use(cookieParser());
 
 const uri = DATABASE_URL;
-mongoose.connect(uri);
-const connection = mongoose.connection;
+connect(uri);
+const connection = _connection;
 connection.once("open", () => {
   console.log("MongoDB Connected"); // eslint-disable-line
 });
@@ -39,7 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(
-  Sentry.Handlers.errorHandler({
+  Handlers.errorHandler({
     shouldHandleError(error) {
       if (error.status >= 400) {
         return true;
