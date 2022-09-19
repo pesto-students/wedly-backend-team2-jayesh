@@ -29,7 +29,7 @@ const uri = DATABASE_URL;
 mongoose.connect(uri);
 const connection = mongoose.connection;
 connection.once("open", () => {
-  console.log("MongoDB Connected");
+  console.log("MongoDB Connected"); // eslint-disable-line
 });
 
 app.get("/", (req, res) => {
@@ -46,9 +46,9 @@ app.use(
       }
       return false;
     },
-  })
+  }),
 );
 
 app.listen(port, () => {
-  console.log(`Server is running on: ${port}`);
+  console.log(`Server is running on: ${port}`); // eslint-disable-line
 });
