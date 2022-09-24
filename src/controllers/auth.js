@@ -3,7 +3,7 @@ export const authController = {
     const { accessToken, refreshToken } = req.user;
     delete req.user.accessToken;
     delete req.user.refreshToken;
-
+    
     res
       .cookie("accessToken", `Bearer ${accessToken}`, {
         httponly: true,

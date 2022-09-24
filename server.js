@@ -30,7 +30,13 @@ const port = APP_PORT || 7000;
 app.use(Handlers.requestHandler());
 app.use(Handlers.tracingHandler());
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: [`${process.env.CLIENT_APP_URL}`],
+  }),
+);
 app.use(json());
 app.use(cookieParser());
 
