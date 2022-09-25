@@ -46,9 +46,7 @@ passport.use(localStrategy);
 export const authenticateUser = async function (req, res, next) {
   passport.authenticate(
     "local",
-    {
-      session: false,
-    },
+    { session: false },
     function (err, user, info) {
       if (err) {
         Sentry.captureException(err);

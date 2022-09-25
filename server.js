@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const { connect, connection: _connection } = mongoose;
 import cors from "cors";
 import passport from "passport";
+import session from "express-session";
 import cookieParser from "cookie-parser";
 const app = express();
 import { init, Integrations, Handlers } from "@sentry/node";
@@ -33,12 +34,28 @@ app.use(Handlers.tracingHandler());
 app.use(
   cors({
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    origin: [`${process.env.CLIENT_APP_URL}`],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Credentials",
+      "Access-Control-Allow-Origin",
+    ],
+    origin: [`${process.env.CLIENT_APP_URL}`, "http://localhost:7000"],
   }),
 );
 app.use(json());
 app.use(cookieParser());
+app.use(
+  session({
+    name: "session",
+    secret: "secret123",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const uri = DATABASE_URL;
 connect(uri);
@@ -54,8 +71,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", routes);
-
-app.use(passport.initialize());
 
 app.use(
   Handlers.errorHandler({
