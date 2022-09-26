@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import passport from "passport";
 import LocalStrategy from "./localStrategy.js";
+import GoogleStratgey from "./googleStrategy.js";
 import { Host } from "../../src/models/Person.js";
 
 passport.serializeUser((user, done) => {
@@ -15,6 +16,6 @@ passport.deserializeUser((id, done) => {
 
 // ==== Register Strategies ====
 passport.use(LocalStrategy);
-// use(GoogleStratgey);
+passport.use(GoogleStratgey);
 
 export default passport;

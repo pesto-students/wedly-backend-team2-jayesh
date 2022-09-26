@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import hashPassword from "../utils/hashPassword.js";
 
-const PersonSchema = new mongoose.Schema(
+const HostSchema = new mongoose.Schema(
   {
     name: {
       required: true,
@@ -11,32 +11,31 @@ const PersonSchema = new mongoose.Schema(
       type: String,
       unique: true,
       trim: true,
-    },
-  },
-  {
-    timestamps: true,
-    discriminatorKey: "type",
-  },
-);
-
-const HostSchema = PersonSchema.discriminator(
-  "Host",
-  new mongoose.Schema({
-    password: {
-      type: String,
       required: true,
+    },
+    local: {
+      password: {
+        type: String,
+      },
+    },
+    google: {
+      googleId: { type: String },
+      photo: { type: String },
     },
     isVerified: {
       type: Boolean,
       default: false,
     },
-  }),
+  },
+  {
+    timestamps: true,
+  },
 );
 
 HostSchema.pre("save", async function (next) {
   try {
-    if (!this.isModified("password")) return next();
-    this.password = await hashPassword(this.password);
+    if (!this.isModified("local.password")) return next();
+    this.local.password = await hashPassword(this.local.password);
     next();
   } catch (error) {
     throw new Error(error);

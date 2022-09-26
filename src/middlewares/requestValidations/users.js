@@ -3,10 +3,8 @@ import Joi from "joi";
 function getDataSchema() {
   return Joi.object({
     name: Joi.string(),
-    type: Joi.string(),
     email: Joi.string(),
     password: Joi.string(),
-    isVerified: Joi.bool(),
   });
 }
 

@@ -18,9 +18,9 @@ const strategy = new LocalStrategy(
         Sentry.captureMessage("Email is not registered", "warning");
         return done(null, false, "Email is not registered");
       } else {
-        if (await bcrypt.compare(password, user[0].password)) {
+        if (await bcrypt.compare(password, user[0].local.password)) {
           const payload = user[0];
-          payload["password"] = undefined;
+          payload.local.password = undefined;
           const accessToken = generateJWTToken(payload, "access");
           const refreshToken = generateJWTToken(payload, "refresh");
           return done(null, { payload, accessToken, refreshToken });

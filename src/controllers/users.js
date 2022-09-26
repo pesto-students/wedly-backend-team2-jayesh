@@ -2,14 +2,12 @@ import { Host } from "../models/Person.js";
 
 export const userController = {
   async post(req, res, next) {
-    const { name, type, email, password, isVerified } = req.body;
+    const { name, email, password } = req.body;
 
     const newHost = new Host({
       name,
-      type,
       email,
-      password,
-      isVerified,
+      "local.password": password,
     });
 
     try {
