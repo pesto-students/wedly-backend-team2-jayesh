@@ -53,13 +53,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session()); // will call the deserializeUser
 
-// const uri = DATABASE_URL;
-// connect(uri);
-// const connection = _connection;
-// connection.once("open", () => {
-//   console.log("MongoDB Connected"); // eslint-disable-line
-// });
-
 app.get("/", (req, res) => {
   res.status(200).json({
     message: "Welcome to the Wedly API",

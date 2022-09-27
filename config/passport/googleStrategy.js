@@ -14,7 +14,6 @@ const strategy = new GoogleStrategy.Strategy(
     refreshToken = generateJWTToken(profile, "refresh");
     const existingUser = await Host.findOne({ email: profile.emails[0].value });
     // eslint-disable-next-line no-console
-    console.log(profile);
     let payload;
     if (!existingUser) {
       payload = new Host({
