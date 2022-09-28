@@ -1,4 +1,4 @@
-import { Host } from "../../models/Person.js";
+import { Host } from "../../models/Host.js";
 import { ACCESS_TOKEN_SECRET_KEY } from "../../../config/index.js";
 import jwt from "jsonwebtoken";
 import * as Sentry from "@sentry/node";

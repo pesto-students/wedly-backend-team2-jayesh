@@ -2,7 +2,7 @@
 import passport from "passport";
 import LocalStrategy from "./localStrategy.js";
 import GoogleStratgey from "./googleStrategy.js";
-import { Host } from "../../src/models/Person.js";
+import { Host } from "../../src/models/Host.js";
 
 passport.serializeUser((user, done) => {
   done(null, { _id: user.payload._id });

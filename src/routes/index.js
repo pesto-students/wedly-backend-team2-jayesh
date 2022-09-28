@@ -6,6 +6,9 @@ import { userValidation } from "../middlewares/requestValidations/users.js";
 import { authValidation } from "../middlewares/requestValidations/auth.js";
 import { userController } from "../controllers/users.js";
 import { authController } from "../controllers/auth.js";
+// import { authAccessToken } from "../middlewares/authorization/accessToken.js";
+import { weddingDetailsController } from "../controllers/weddingDetails.js";
+import { weddingDetailsValidation } from "../middlewares/requestValidations/weddingDetails.js";
 const router = express.Router();
 import passport from "../../config/passport/index.js";
 
@@ -51,4 +54,12 @@ router.get("/google/failed", (req, res) => {
 });
 
 router.get("/google/logout", authController.logoutGoogleUser);
+
+router.post(
+  "/weddingDetails",
+  weddingDetailsValidation,
+  // authAccessToken,
+  weddingDetailsController.addDetails,
+);
+
 export default router;

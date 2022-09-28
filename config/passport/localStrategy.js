@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import LocalStrategy from "passport-local";
-import { Host } from "../../src/models/Person.js";
+import { Host } from "../../src/models/Host.js";
 import bcrypt from "bcrypt";
 import * as Sentry from "@sentry/node";
 import generateJWTToken from "../../src/utils/generateJWTToken.js";

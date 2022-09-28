@@ -1,4 +1,4 @@
-import { Host } from "../models/Person.js";
+import { Host } from "../models/Host.js";
 
 export const userController = {
   async post(req, res, next) {

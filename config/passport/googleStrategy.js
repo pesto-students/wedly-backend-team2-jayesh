@@ -1,4 +1,4 @@
-import { Host } from "../../src/models/Person.js";
+import { Host } from "../../src/models/Host.js";
 import generateJWTToken from "../../src/utils/generateJWTToken.js";
 
 import GoogleStrategy from "passport-google-oauth20";
