@@ -1,17 +1,17 @@
 import express, { json } from "express";
-import mongoose from "mongoose";
-const { connect, connection: _connection } = mongoose;
 import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 import { init, Integrations, Handlers } from "@sentry/node";
 import { Integrations as _Integrations } from "@sentry/tracing";
-import {
-  APP_ENV,
-  APP_PORT,
-  DATABASE_URL,
-  SENTRY_DSN_URL,
-} from "./config/index.js";
+import { APP_ENV, APP_PORT, SENTRY_DSN_URL } from "./config/index.js";
+import routes from "./src/routes/index.js";
+import session from "express-session";
+import { default as connectMongoDBSession } from "connect-mongodb-session";
+
+const MongoDBStore = connectMongoDBSession(session);
+import passport from "./config/passport/index.js";
+import dbConnection from "./config/db/index.js";
 
 init({
   environment: APP_ENV,
@@ -27,16 +27,31 @@ const port = APP_PORT || 7000;
 app.use(Handlers.requestHandler());
 app.use(Handlers.tracingHandler());
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Credentials",
+      "Access-Control-Allow-Origin",
+    ],
+    origin: [`${process.env.CLIENT_APP_URL}`, "http://localhost:7000"],
+  }),
+);
 app.use(json());
 app.use(cookieParser());
+app.use(
+  session({
+    store: new MongoDBStore({ mongooseConnection: dbConnection }),
+    secret: process.env.APP_SECRET || "this is the default passphrase",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 
-const uri = DATABASE_URL;
-connect(uri);
-const connection = _connection;
-connection.once("open", () => {
-  console.log("MongoDB Connected"); // eslint-disable-line
-});
+app.use(passport.initialize());
+app.use(passport.session()); // will call the deserializeUser
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -54,6 +69,8 @@ app.use(
     },
   }),
 );
+
+app.use("/api", routes);
 
 app.listen(port, () => {
   console.log(`Server is running on: ${port}`); // eslint-disable-line
