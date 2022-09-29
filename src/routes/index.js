@@ -4,11 +4,19 @@ import express from "express";
 // import passport from "passport";
 import { userValidation } from "../middlewares/requestValidations/users.js";
 import { authValidation } from "../middlewares/requestValidations/auth.js";
+import { weddingDetailsValidation } from "../middlewares/requestValidations/weddingDetails.js";
+import {
+  multipleEventsValidation,
+  singleEventsValidation,
+} from "../middlewares/requestValidations/event.js";
+
 import { userController } from "../controllers/users.js";
 import { authController } from "../controllers/auth.js";
-// import { authAccessToken } from "../middlewares/authorization/accessToken.js";
 import { weddingDetailsController } from "../controllers/weddingDetails.js";
-import { weddingDetailsValidation } from "../middlewares/requestValidations/weddingDetails.js";
+import { eventsController } from "../controllers/events.js";
+
+// import { authAccessToken } from "../middlewares/authorization/accessToken.js";
+
 const router = express.Router();
 import passport from "../../config/passport/index.js";
 
@@ -57,9 +65,47 @@ router.get("/google/logout", authController.logoutGoogleUser);
 
 router.post(
   "/weddingDetails",
-  weddingDetailsValidation,
   // authAccessToken,
+  weddingDetailsValidation,
   weddingDetailsController.addDetails,
+);
+
+router.get(
+  "/weddingDetails",
+  // authAccessToken,
+  weddingDetailsController.getDetails,
+);
+
+router.post(
+  "/event/single",
+  //authAccessToken,
+  singleEventsValidation,
+  eventsController.addSingleEvent,
+);
+
+router.post(
+  "/event/multiple",
+  //authAccessToken,
+  multipleEventsValidation,
+  eventsController.addMultipleEvents,
+);
+
+router.get(
+  "/event",
+  //authAccessToken,
+  eventsController.getAllEvents,
+);
+
+router.patch(
+  "/event",
+  //authAccessToken,
+  eventsController.updateEvent,
+);
+
+router.delete(
+  "/event",
+  //authAccessToken
+  eventsController.deleteEvent,
 );
 
 export default router;

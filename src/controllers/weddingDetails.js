@@ -46,11 +46,34 @@ export const weddingDetailsController = {
       } catch (err) {
         return res
           .status(500)
-          .json({ message: "Some error occurred. Please try again!" });
+          .json({ message: "Some error occurred. Please try again!", err });
       }
     } else {
       res.status(401).json({
         message: "Please login first to add wedding details!",
+      });
+    }
+  },
+
+  async getDetails(req, res) {
+    if (req.user) {
+      try {
+        const bride = await Bride.find();
+        const groom = await Groom.find();
+
+        res.status(200).json({
+          bride: bride,
+          groom: groom,
+        });
+      } catch (err) {
+        res.status(500).json({
+          message: "Something went wrong!",
+          err,
+        });
+      }
+    } else {
+      res.status(401).json({
+        message: "Please login first to get wedding details!",
       });
     }
   },
