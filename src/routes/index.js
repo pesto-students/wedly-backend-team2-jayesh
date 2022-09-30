@@ -9,11 +9,16 @@ import {
   multipleEventsValidation,
   singleEventsValidation,
 } from "../middlewares/requestValidations/event.js";
+import {
+  singleGuestValidation,
+  multipleGuestValidation,
+} from "../middlewares/requestValidations/guest.js";
 
 import { userController } from "../controllers/users.js";
 import { authController } from "../controllers/auth.js";
 import { weddingDetailsController } from "../controllers/weddingDetails.js";
 import { eventsController } from "../controllers/events.js";
+import { guestsController } from "../controllers/guest.js";
 
 // import { authAccessToken } from "../middlewares/authorization/accessToken.js";
 
@@ -106,6 +111,38 @@ router.delete(
   "/event",
   //authAccessToken
   eventsController.deleteEvent,
+);
+
+router.post(
+  "/guest/single",
+  //authAccessToken,
+  singleGuestValidation,
+  guestsController.addSingleGuest,
+);
+
+router.post(
+  "/guest/multiple",
+  //authAccessToken,
+  multipleGuestValidation,
+  guestsController.addMultipleGuests,
+);
+
+router.get(
+  "/guest",
+  //authAccessToken,
+  guestsController.getAllGuests,
+);
+
+router.patch(
+  "/guest",
+  //authAccessToken,
+  guestsController.updateGuest,
+);
+
+router.delete(
+  "/guest",
+  //authAccessToken
+  guestsController.deleteGuest,
 );
 
 export default router;
