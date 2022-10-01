@@ -45,7 +45,11 @@ app.use(
       "Access-Control-Allow-Credentials",
       "Access-Control-Allow-Origin",
     ],
-    origin: [`${CLIENT_APP_URL}`, "http://localhost:7000"],
+    origin: [
+      `${CLIENT_APP_URL}`,
+      "http://localhost:7000",
+      "https://wedly-backend.herokuapp.com/",
+    ],
   }),
 );
 app.use(json());
