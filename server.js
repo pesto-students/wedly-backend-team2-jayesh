@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 import { init, Integrations, Handlers } from "@sentry/node";
 import { Integrations as _Integrations } from "@sentry/tracing";
-import { APP_ENV, APP_PORT, SENTRY_DSN_URL } from "./config/index.js";
+import { APP_ENV, PORT, SENTRY_DSN_URL } from "./config/index.js";
 import routes from "./src/routes/index.js";
 import session from "express-session";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
@@ -23,7 +23,7 @@ init({
   tracesSampleRate: 1.0,
 });
 
-const port = APP_PORT || 7000;
+const port = PORT || 7000;
 app.use(Handlers.requestHandler());
 app.use(Handlers.tracingHandler());
 
