@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import express, { json } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -15,6 +16,7 @@ import {
 import routes from "./src/routes/index.js";
 import session from "express-session";
 import { default as connectMongoDBSession } from "connect-mongodb-session";
+import mongoose from "mongoose";
 
 const MongoDBStore = connectMongoDBSession(session);
 import passport from "./config/passport/index.js";
@@ -60,6 +62,15 @@ app.use(
     saveUninitialized: false,
   }),
 );
+
+mongoose.connect(DATABASE_URL);
+const db = mongoose.connection;
+db.on("error", (err) => {
+  console.log(`There was an error connecting to the database: ${err}`);
+});
+db.once("open", () => {
+  console.log(`You have successfully connected to your mongo database`);
+});
 
 app.use(passport.initialize());
 app.use(passport.session()); // will call the deserializeUser
