@@ -49,13 +49,13 @@ export const authController = {
       .cookie("accessToken", `Bearer ${accessToken}`, {
         httponly: true,
         sameSite: "none",
-        secure: true,
+        secure: false,
         maxAge: 1000 * 60 * 30,
       })
       .cookie("refreshToken", `Bearer ${refreshToken}`, {
         httponly: true,
         sameSite: "none",
-        secure: true,
+        secure: false,
         maxAge: 1000 * 60 * 60 * 24,
       });
     res.redirect(CLIENT_APP_URL);
