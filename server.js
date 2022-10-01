@@ -45,11 +45,7 @@ app.use(
       "Access-Control-Allow-Credentials",
       "Access-Control-Allow-Origin",
     ],
-    origin: [
-      `${CLIENT_APP_URL}`,
-      "http://localhost:7000",
-      "https://wedly-backend.herokuapp.com/",
-    ],
+    origin: [`${CLIENT_APP_URL}`, "http://localhost:7000"],
   }),
 );
 app.use(json());
@@ -64,12 +60,6 @@ app.use(
     secret: APP_SECRET || "this is the default passphrase",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      sameSite: false,
-      secure: APP_ENV === "production",
-      maxAge: 1000,
-      httpOnly: true,
-    },
   }),
 );
 
