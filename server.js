@@ -65,7 +65,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true,
+      sameSite: false,
+      secure: APP_ENV === "production",
+      maxAge: 1000,
+      httpOnly: true,
     },
   }),
 );
