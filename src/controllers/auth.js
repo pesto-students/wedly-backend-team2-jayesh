@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+import { CLIENT_APP_URL } from "../../config/index.js";
+
 /* eslint-disable no-console */
 export const authController = {
   async authenticateUser(req, res) {
@@ -56,7 +58,7 @@ export const authController = {
         secure: true,
         maxAge: 1000 * 60 * 60 * 24,
       });
-    res.redirect(process.env.CLIENT_APP_URL);
+    res.redirect(CLIENT_APP_URL);
   },
 
   async logoutGoogleUser(req, res, next) {
@@ -68,7 +70,7 @@ export const authController = {
       res.clearCookie("connect.sid");
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
-      res.redirect(process.env.CLIENT_APP_URL);
+      res.redirect(CLIENT_APP_URL);
     });
   },
 };
