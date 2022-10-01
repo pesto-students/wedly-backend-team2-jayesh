@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
+import { DATABASE_URL } from "../index.js";
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DATABASE_URL);
+mongoose.connect(DATABASE_URL);
 
 // should mongoose.connection be put in the call back of mongoose.connect???
 const db = mongoose.connection;
