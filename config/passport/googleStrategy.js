@@ -1,12 +1,13 @@
 import { Host } from "../../src/models/Person.js";
 import generateJWTToken from "../../src/utils/generateJWTToken.js";
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../index.js";
 
 import GoogleStrategy from "passport-google-oauth20";
 
 const strategy = new GoogleStrategy.Strategy(
   {
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "/api/google/callback",
   },
   async function (accessToken, refreshToken, profile, done) {
