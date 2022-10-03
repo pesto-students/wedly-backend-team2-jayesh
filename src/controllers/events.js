@@ -17,10 +17,10 @@ export const eventsController = {
       });
 
       try {
-        await event.save();
+        const addedEvent = await event.save();
         return res
           .status(201)
-          .json({ message: "Event details successfully saved!" });
+          .json({ message: "Event details successfully saved!", addedEvent });
       } catch (err) {
         return res.status(500).json({ message: "Something went wrong!", err });
       }
