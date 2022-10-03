@@ -26,7 +26,7 @@ export const eventsController = {
       }
     } else {
       res.status(401).json({
-        message: "Please login first to add event details!",
+        message: "Please login to add event details!",
       });
     }
   },
