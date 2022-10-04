@@ -38,11 +38,13 @@ export const weddingDetailsController = {
       });
 
       try {
-        await bride.save();
-        await groom.save();
-        return res
-          .status(201)
-          .json({ message: "Bride and groom details successfully saved!" });
+        const newBride = await bride.save();
+        const newGroom = await groom.save();
+        return res.status(201).json({
+          message: "Bride and groom details successfully saved!",
+          newBride,
+          newGroom,
+        });
       } catch (err) {
         return res
           .status(500)
