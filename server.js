@@ -69,6 +69,7 @@ app.use(
       secure: true,
       httpOnly: true,
       sameSite: "none",
+      domain: `${CLIENT_APP_URL}`,
     },
   }),
 );
