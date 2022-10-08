@@ -60,6 +60,12 @@ app.use(
     secret: APP_SECRET || "this is the default passphrase",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+    },
   }),
 );
 
