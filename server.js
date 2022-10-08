@@ -3,6 +3,7 @@ import express, { json } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
+app.set("trust proxy", 1);
 import { init, Integrations, Handlers } from "@sentry/node";
 import { Integrations as _Integrations } from "@sentry/tracing";
 import {
@@ -61,11 +62,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60,
       secure: true,
       httpOnly: true,
       sameSite: "none",
-      domain: `https://wedly-backend.herokuapp.com`,
     },
   }),
 );
