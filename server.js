@@ -45,7 +45,7 @@ app.use(
       "Access-Control-Allow-Credentials",
       "Access-Control-Allow-Origin",
     ],
-    origin: `${CLIENT_APP_URL}`,
+    origin: [`${CLIENT_APP_URL}`, "http://localhost:7000"],
   }),
 );
 app.use(json());
@@ -60,11 +60,6 @@ app.use(
     secret: APP_SECRET || "this is the default passphrase",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60,
-      sameSite: "none",
-      secure: true,
-    },
   }),
 );
 
@@ -76,7 +71,7 @@ db.on("error", (err) => {
 db.once("open", () => {
   console.log(`You have successfully connected to your mongo database`);
 });
-app.set("trust proxy", 1);
+
 app.use(passport.initialize());
 app.use(passport.session()); // will call the deserializeUser
 

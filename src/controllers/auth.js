@@ -26,6 +26,19 @@ export const authController = {
       .json({ user: cleanUser });
   },
 
+  async authState(req, res) {
+    if (req.isAuthenticated()) {
+      return res.status(200).json({
+        flag: true,
+        user: req.user,
+      });
+    }
+    return res.status(200).json({
+      flag: false,
+      user: null,
+    });
+  },
+
   async logout(req, res) {
     if (req.user) {
       req.session.destroy();
@@ -47,11 +60,13 @@ export const authController = {
     // delete cleanUser.password;
     res
       .cookie("accessToken", `Bearer ${accessToken}`, {
+        httponly: true,
         sameSite: "none",
         secure: true,
         maxAge: 1000 * 60 * 30,
       })
       .cookie("refreshToken", `Bearer ${refreshToken}`, {
+        httponly: true,
         sameSite: "none",
         secure: true,
         maxAge: 1000 * 60 * 60 * 24,
