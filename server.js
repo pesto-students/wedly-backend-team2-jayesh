@@ -3,7 +3,7 @@ import express, { json } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
-app.set("trust proxy", 1);
+// app.set("trust proxy", 1);
 import { init, Integrations, Handlers } from "@sentry/node";
 import { Integrations as _Integrations } from "@sentry/tracing";
 import {
@@ -61,11 +61,11 @@ app.use(
     secret: APP_SECRET || "this is the default passphrase",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      sameSite: "none",
-    },
+    // cookie: {
+    //   secure: true,
+    //   httpOnly: true,
+    //   sameSite: "none",
+    // },
   }),
 );
 
