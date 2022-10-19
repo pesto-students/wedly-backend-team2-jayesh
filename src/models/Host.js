@@ -1,5 +1,8 @@
+/* eslint-disable no-console */
 import mongoose from "mongoose";
 import hashPassword from "../utils/hashPassword.js";
+import { sendMail } from "../utils/sendMailUtil.js";
+import { APP_URL } from "../../config/index.js";
 
 const HostSchema = new mongoose.Schema(
   {
@@ -39,6 +42,20 @@ HostSchema.pre("save", async function (next) {
     next();
   } catch (error) {
     throw new Error(error);
+  }
+});
+
+HostSchema.post("save", async function (doc) {
+  if (doc.email) {
+    console.log(doc);
+    const queryParams = `id=${doc["_id"]}&hashedString=${doc.local.password}`;
+    const linkToRedirect = `${APP_URL}/api/verify/mail?${queryParams}`;
+    await sendMail(
+      doc.email,
+      "Wedly Verification Mail",
+      "Please verify your email id",
+      linkToRedirect,
+    );
   }
 });
 

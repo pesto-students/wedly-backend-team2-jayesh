@@ -1,38 +1,65 @@
 /* eslint-disable no-console */
-"use strict";
 import nodemailer from "nodemailer";
+import { google } from "googleapis";
+import {
+  CLIENT_EMAIL,
+  REDIRECT_URI,
+  EMAIL_CLIENT_ID,
+  EMAIL_CLIENT_SECRET,
+  EMAIL_REFRESH_TOKEN,
+} from "../../config/index.js";
 
 // async..await is not allowed in global scope, must use a wrapper
-async function main() {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
+export async function sendMail(email, subject, text, link) {
+  // const EMAIL_CLIENT_ID = `332208330443-aq85ollk3addn1ev21sgjkpdlghm5cc7.apps.googleusercontent.com`;
+  // const EMAIL_CLIENT_SECRET = `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`;
+  // const REDIRECT_URI = `https://developers.google.com/oauthplayground`;
+  // const CLIENT_EMAIL = "wedly2022@gmail.com";
+  // const EMAIL_REFRESH_TOKEN = `1//04-yKHML8G1VaCgYIARAAGAQSNwF-L9IrCp6OF431vn4lYd4jl1LRO27M35-2Z56m7d0Fo-uwFO9-OmTgIcDSoBdH66cVN3MQkK0`;
+  const OAuth2Client = new google.auth.OAuth2(
+    EMAIL_CLIENT_ID,
+    EMAIL_CLIENT_SECRET,
+    REDIRECT_URI,
+  );
+  OAuth2Client.setCredentials({ refresh_token: EMAIL_REFRESH_TOKEN });
+  try {
+    // Generate the accessToken on the fly
+    const accessToken = await OAuth2Client.getAccessToken();
 
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // true for 465, false for other ports
-    auth: {
-      user: "wedly2022@gmail.com", // generated ethereal user
-      pass: "wedly@123", // generated ethereal password
-    },
-  });
+    // Create the email envelope (transport)
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: CLIENT_EMAIL,
+        clientId: EMAIL_CLIENT_ID,
+        clientSecret: EMAIL_CLIENT_SECRET,
+        refreshToken: EMAIL_REFRESH_TOKEN,
+        accessToken: accessToken,
+      },
+    });
 
-  // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: "wedly2022@gmail.com", // sender address
-    to: "shivanshusid123@gmail.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>", // html body
-  });
+    // Create the email options and body
+    const mailOptions = {
+      from: CLIENT_EMAIL,
+      to: email,
+      subject: subject,
+      text: text,
+      html: `Follow this link to verify your email account - ${link}`,
+      // attachments: [
+      //   {
+      //     filename: `${name}.pdf`,
+      //     path: path.join(__dirname, `e-books-path/${name}.pdf`),
+      //     contentType: "application/pdf",
+      //   },
+      // ],
+    };
 
-  console.log("Message sent: %s", info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-  // Preview only available when sending through an Ethereal account
-  //   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    // Set up the email options and delivering it
+    const result = await transport.sendMail(mailOptions);
+    return result;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
-
-main().catch(console.error);

@@ -60,7 +60,7 @@ export const guestsController = {
   async getAllGuests(req, res) {
     if (req.user) {
       try {
-        const guests = await Guest.find();
+        const guests = await Guest.find({ hostId: req.user._id });
 
         res.status(200).json({
           guests,

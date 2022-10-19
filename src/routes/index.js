@@ -20,7 +20,7 @@ import { weddingDetailsController } from "../controllers/weddingDetails.js";
 import { eventsController } from "../controllers/events.js";
 import { guestsController } from "../controllers/guest.js";
 
-// import { authAccessToken } from "../middlewares/authorization/accessToken.js";
+import { authAccessToken } from "../middlewares/authorization/accessToken.js";
 
 const router = express.Router();
 import passport from "../../config/passport/index.js";
@@ -36,6 +36,7 @@ router.post(
 );
 
 router.post("/logout", authController.logout);
+router.get("/verify/mail", authValidation, authController.verifyEmail);
 
 router.get("/authState", authController.authState);
 
@@ -73,91 +74,59 @@ router.get("/google/logout", authController.logoutGoogleUser);
 
 router.post(
   "/weddingDetails",
-  // authAccessToken,
+  authAccessToken,
   weddingDetailsValidation,
   weddingDetailsController.addDetails,
 );
 
 router.get(
   "/weddingDetails",
-  // authAccessToken,
+  authAccessToken,
   weddingDetailsController.getDetails,
 );
 
 router.post(
   "/event/single",
-  // authAccessToken,
+  authAccessToken,
   singleEventsValidation,
   eventsController.addSingleEvent,
 );
 
 router.post(
   "/event/multiple",
-  // authAccessToken,
+  authAccessToken,
   multipleEventsValidation,
   eventsController.addMultipleEvents,
 );
 
-router.get(
-  "/event",
-  // authAccessToken,
-  eventsController.getAllEvents,
-);
+router.get("/event", authAccessToken, eventsController.getAllEvents);
 
-router.patch(
-  "/event",
-  // authAccessToken,
-  eventsController.updateEvent,
-);
+router.patch("/event", authAccessToken, eventsController.updateEvent);
 
-router.delete(
-  "/event",
-  //  authAccessToken,
-  eventsController.deleteEvent,
-);
+router.delete("/event", authAccessToken, eventsController.deleteEvent);
 
 router.post(
   "/guest/single",
-  // authAccessToken,
+  authAccessToken,
   singleGuestValidation,
   guestsController.addSingleGuest,
 );
 
 router.post(
   "/guest/multiple",
-  // authAccessToken,
+  authAccessToken,
   multipleGuestValidation,
   guestsController.addMultipleGuests,
 );
 
-router.get(
-  "/guest",
-  // authAccessToken,
-  guestsController.getAllGuests,
-);
+router.get("/guest", authAccessToken, guestsController.getAllGuests);
 
-router.patch(
-  "/guest",
-  // authAccessToken,
-  guestsController.updateGuest,
-);
+router.patch("/guest", authAccessToken, guestsController.updateGuest);
 
-router.delete(
-  "/guest",
-  // authAccessToken,
-  guestsController.deleteGuest,
-);
+router.delete("/guest", authAccessToken, guestsController.deleteGuest);
 
-router.post(
-  "/addeinvite",
-  // authAccessToken,
-  einviteController.addContent,
-);
+router.post("/addeinvite", authAccessToken, einviteController.addContent);
 
-router.post(
-  "/geteinvite",
-  // authAccessToken,
-  einviteController.getContent,
-);
+router.post("/geteinvite", authAccessToken, einviteController.getContent);
 
 export default router;

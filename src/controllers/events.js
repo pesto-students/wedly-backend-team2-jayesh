@@ -59,7 +59,7 @@ export const eventsController = {
   async getAllEvents(req, res) {
     if (req.user) {
       try {
-        const events = await Event.find();
+        const events = await Event.find({ hostId: req.user._id });
 
         res.status(200).json({
           events,
