@@ -18,4 +18,6 @@ export const {
   CLIENT_EMAIL,
   EMAIL_CLIENT_SECRET,
   EMAIL_CLIENT_ID,
+  RAZORPAY_TEST_ID,
+  RAZORPAY_TEST_SECRET,
 } = process.env;

@@ -14,7 +14,10 @@ export const authAccessToken = async function (req, res, next) {
         try {
           if (err) res.status(401).json("Invalid token");
           const { payload } = userDetails;
-          const user = await Host.findById(payload._id);
+          console.log(payload);
+          const user =
+            (await Host.findById(payload._id)) ||
+            (await Host.find({ "google.googleId": payload.id }));
           if (!user) {
             Sentry.captureMessage("Invalid user details", "warning");
             res.status(400).json("Invalid user details");

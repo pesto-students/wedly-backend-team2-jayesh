@@ -14,7 +14,7 @@ export const einviteController = {
       } = req.body;
       const hostId = req.user._id;
 
-      const existingTemplate = await EInvite.find({ templateId });
+      const existingTemplate = await EInvite.find({ hostId });
       if (existingTemplate.length === 0) {
         const einvite = new EInvite({
           templateId,
@@ -38,7 +38,7 @@ export const einviteController = {
       } else {
         try {
           const updatedEInvite = await EInvite.findOneAndUpdate(
-            { templateId: templateId },
+            { hostId: hostId },
             {
               page1Content: page1Content,
               page2Content: page2Content,
@@ -65,27 +65,21 @@ export const einviteController = {
   },
 
   async getContent(req, res) {
-    if (req.user) {
-      const { templateId } = req.body;
-      try {
-        const response = await EInvite.find({ templateId });
-        const einvite = response[0];
-        if (response.length !== 0) {
-          return res.status(200).json({
-            einvite,
-          });
-        } else {
-          return res.status(200).json({
-            message: "No such einvite found",
-          });
-        }
-      } catch (err) {
-        return res.status(500).json({ message: "Something went wrong!", err });
+    const { hostId } = req.body;
+    try {
+      const response = await EInvite.find({ hostId });
+      const einvite = response[0];
+      if (response.length !== 0) {
+        return res.status(200).json({
+          einvite,
+        });
+      } else {
+        return res.status(200).json({
+          message: "No such einvite found",
+        });
       }
-    } else {
-      res.status(401).json({
-        message: "Please login first to get einvite details!",
-      });
+    } catch (err) {
+      return res.status(500).json({ message: "Something went wrong!", err });
     }
   },
 };
