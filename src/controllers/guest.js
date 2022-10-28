@@ -16,10 +16,10 @@ export const guestsController = {
       });
 
       try {
-        await guest.save();
+        const addedGuest = await guest.save();
         return res
           .status(201)
-          .json({ message: "Guest details successfully saved!" });
+          .json({ message: "Guest details successfully saved!", addedGuest });
       } catch (err) {
         return res.status(500).json({ message: "Something went wrong!", err });
       }
@@ -37,10 +37,13 @@ export const guestsController = {
         Guest["hostId"] = req.user._id;
       });
       try {
-        await Guest.insertMany(arrayOfGuests);
-        res.status(201).json({
-          message: "Multiple guests were added successfully.",
-        });
+        const addedGuests = await Guest.insertMany(arrayOfGuests);
+        res.status(201).json(
+          {
+            message: "Multiple guests were added successfully.",
+          },
+          addedGuests,
+        );
       } catch (err) {
         res.status(500).json({
           message: "Something went wrong!",
@@ -57,7 +60,7 @@ export const guestsController = {
   async getAllGuests(req, res) {
     if (req.user) {
       try {
-        const guests = await Guest.find();
+        const guests = await Guest.find({ hostId: req.user._id });
 
         res.status(200).json({
           guests,

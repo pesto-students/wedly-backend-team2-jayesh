@@ -1,8 +1,28 @@
 /* eslint-disable no-unused-vars */
 import { CLIENT_APP_URL } from "../../config/index.js";
+import { Host } from "../models/Host.js";
+import * as Sentry from "@sentry/node";
 
 /* eslint-disable no-console */
 export const authController = {
+  async verifyEmail(req, res) {
+    try {
+      const data = await Host.findById(req.query.id);
+      if (req.query.hashedString === data.local.password) {
+        await Host.findByIdAndUpdate(
+          req.query.id,
+          { isVerified: true },
+          { new: true },
+        );
+        res.status(302).redirect(CLIENT_APP_URL + "?success=true");
+      } else {
+        res.status(422).redirect(CLIENT_APP_URL + "?success=false&errorCode=2");
+      }
+    } catch (error) {
+      Sentry.captureException(error);
+      res.status(500).redirect(CLIENT_APP_URL + "?success=false&errorCode=1");
+    }
+  },
   async authenticateUser(req, res) {
     const { accessToken, refreshToken } = req.user;
     delete req.user.accessToken;

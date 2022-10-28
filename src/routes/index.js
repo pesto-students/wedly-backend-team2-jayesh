@@ -19,11 +19,13 @@ import { authController } from "../controllers/auth.js";
 import { weddingDetailsController } from "../controllers/weddingDetails.js";
 import { eventsController } from "../controllers/events.js";
 import { guestsController } from "../controllers/guest.js";
+import { eaashirvaadController } from "../controllers/eaashirvaad.js";
 
-// import { authAccessToken } from "../middlewares/authorization/accessToken.js";
+import { authAccessToken } from "../middlewares/authorization/accessToken.js";
 
 const router = express.Router();
 import passport from "../../config/passport/index.js";
+import { einviteController } from "../controllers/einvite.js";
 
 router.post("/signup", userValidation, userController.post);
 
@@ -35,6 +37,7 @@ router.post(
 );
 
 router.post("/logout", authController.logout);
+router.get("/verify/mail", authValidation, authController.verifyEmail);
 
 router.get("/authState", authController.authState);
 
@@ -49,7 +52,6 @@ router.get(
   }),
   authController.authenticateGoogleUser,
 );
-
 router.get("/google/success", (req, res) => {
   if (req.user) {
     res.status(200).json({
@@ -60,91 +62,62 @@ router.get("/google/success", (req, res) => {
     });
   }
 });
-
 router.get("/google/failed", (req, res) => {
   res.status(401).json({
     success: false,
     message: "Failure",
   });
 });
-
 router.get("/google/logout", authController.logoutGoogleUser);
 
 router.post(
   "/weddingDetails",
-  // authAccessToken,
+  authAccessToken,
   weddingDetailsValidation,
   weddingDetailsController.addDetails,
 );
-
 router.get(
   "/weddingDetails",
-  // authAccessToken,
+  authAccessToken,
   weddingDetailsController.getDetails,
 );
 
 router.post(
   "/event/single",
-  //authAccessToken,
+  authAccessToken,
   singleEventsValidation,
   eventsController.addSingleEvent,
 );
-
 router.post(
   "/event/multiple",
-  //authAccessToken,
+  authAccessToken,
   multipleEventsValidation,
   eventsController.addMultipleEvents,
 );
-
-router.get(
-  "/event",
-  //authAccessToken,
-  eventsController.getAllEvents,
-);
-
-router.patch(
-  "/event",
-  //authAccessToken,
-  eventsController.updateEvent,
-);
-
-router.delete(
-  "/event",
-  //authAccessToken
-  eventsController.deleteEvent,
-);
+router.get("/event", authAccessToken, eventsController.getAllEvents);
+router.patch("/event", authAccessToken, eventsController.updateEvent);
+router.delete("/event", authAccessToken, eventsController.deleteEvent);
 
 router.post(
   "/guest/single",
-  //authAccessToken,
+  authAccessToken,
   singleGuestValidation,
   guestsController.addSingleGuest,
 );
-
 router.post(
   "/guest/multiple",
-  //authAccessToken,
+  authAccessToken,
   multipleGuestValidation,
   guestsController.addMultipleGuests,
 );
+router.get("/guest", authAccessToken, guestsController.getAllGuests);
+router.patch("/guest", authAccessToken, guestsController.updateGuest);
+router.delete("/guest", authAccessToken, guestsController.deleteGuest);
 
-router.get(
-  "/guest",
-  //authAccessToken,
-  guestsController.getAllGuests,
-);
+router.post("/addeinvite", authAccessToken, einviteController.addContent);
+router.post("/geteinvite", einviteController.getContent);
 
-router.patch(
-  "/guest",
-  //authAccessToken,
-  guestsController.updateGuest,
-);
-
-router.delete(
-  "/guest",
-  //authAccessToken
-  guestsController.deleteGuest,
-);
+router.post("/eaashirvaad", eaashirvaadController.sendPayment);
+router.post("/eaashirvaad/verify", eaashirvaadController.verifyPayment);
 
 export default router;

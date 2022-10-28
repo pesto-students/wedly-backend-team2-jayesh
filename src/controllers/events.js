@@ -26,7 +26,7 @@ export const eventsController = {
       }
     } else {
       res.status(401).json({
-        message: "Please login first to add event details!",
+        message: "Please login to add event details!",
       });
     }
   },
@@ -38,9 +38,10 @@ export const eventsController = {
         event["hostId"] = req.user._id;
       });
       try {
-        await Event.insertMany(arrayOfEvents);
+        const addedEvents = await Event.insertMany(arrayOfEvents);
         res.status(201).json({
           message: "Multiple Events were added successfully.",
+          addedEvents,
         });
       } catch (err) {
         res.status(500).json({
@@ -58,7 +59,7 @@ export const eventsController = {
   async getAllEvents(req, res) {
     if (req.user) {
       try {
-        const events = await Event.find();
+        const events = await Event.find({ hostId: req.user._id });
 
         res.status(200).json({
           events,
