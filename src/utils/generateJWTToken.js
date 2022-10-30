@@ -7,7 +7,7 @@ import {
 const properties = {
   access: {
     options: {
-      expiresIn: "1 hour",
+      expiresIn: "1 day",
     },
     secretKey: ACCESS_TOKEN_SECRET_KEY,
   },
