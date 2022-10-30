@@ -14,7 +14,6 @@ export const authAccessToken = async function (req, res, next) {
         try {
           if (err) res.status(401).json("Invalid token");
           const { payload } = userDetails;
-          console.log(payload);
           const user =
             (await Host.findById(payload._id)) ||
             (await Host.find({ "google.googleId": payload.id }));

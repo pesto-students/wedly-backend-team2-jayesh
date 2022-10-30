@@ -60,12 +60,12 @@ export const weddingDetailsController = {
   async getDetails(req, res) {
     if (req.user) {
       try {
-        const bride = await Bride.find();
-        const groom = await Groom.find();
+        const bride = await Bride.findOne({hostId: req.user._id});
+        const groom = await Groom.findOne({hostId: req.user._id});
 
         res.status(200).json({
-          bride: bride,
-          groom: groom,
+          bride,
+          groom
         });
       } catch (err) {
         res.status(500).json({
