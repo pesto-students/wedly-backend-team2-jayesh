@@ -114,8 +114,12 @@ router.get("/guest", authAccessToken, guestsController.getAllGuests);
 router.patch("/guest", authAccessToken, guestsController.updateGuest);
 router.delete("/guest", authAccessToken, guestsController.deleteGuest);
 
-router.post("/addeinvite", authAccessToken, einviteController.addContent);
-router.post("/geteinvite", einviteController.getContent);
+router.post("/firstpageeinvite", authAccessToken, einviteController.addFirstPage);
+router.get("/firstpageeinvite/:hostID", einviteController.getFirstPage);
+router.post("/otherpageseinvite", authAccessToken, einviteController.addOtherPages);
+router.get("/otherpageseinvite/:hostID/:page", einviteController.getOtherPages);
+
+router.get("/guesteinvite/:hostID",einviteController.getGuestEinvite);
 
 router.post("/eaashirvaad", eaashirvaadController.sendPayment);
 router.post("/eaashirvaad/verify", eaashirvaadController.verifyPayment);
