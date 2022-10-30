@@ -38,12 +38,10 @@ export const guestsController = {
       });
       try {
         const addedGuests = await Guest.insertMany(arrayOfGuests);
-        res.status(201).json(
-          {
-            message: "Multiple guests were added successfully.",
-          },
+        res.status(201).json({
+          message: "Multiple guests were added successfully.",
           addedGuests,
-        );
+        });
       } catch (err) {
         res.status(500).json({
           message: "Something went wrong!",
