@@ -46,7 +46,7 @@ export const authController = {
   },
 
   async authState(req, res) {
-    if (req.isAuthenticated()) {
+    if (req.user) {
       return res.status(200).json({
         flag: true,
         user: req.user,
@@ -78,13 +78,12 @@ export const authController = {
     const user = JSON.parse(JSON.stringify(req.user));
     const cleanUser = Object.assign({}, user);
     // delete cleanUser.password;
-    res
-      .cookie("accessToken", `${accessToken}`, {
-        httponly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 30,
-      })
+    res.cookie("accessToken", `${accessToken}`, {
+      httponly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 1000 * 60 * 30,
+    });
     res.redirect(CLIENT_APP_URL);
   },
 
