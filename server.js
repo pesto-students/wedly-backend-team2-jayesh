@@ -61,11 +61,11 @@ app.use(
     secret: APP_SECRET || "this is the default passphrase",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      sameSite: "none",
-    },
+    // cookie: {
+    //   secure: true,
+    //   httpOnly: true,
+    //   sameSite: "none",
+    // },
   }),
 );
 
