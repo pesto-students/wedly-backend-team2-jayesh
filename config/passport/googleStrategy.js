@@ -10,7 +10,7 @@ const strategy = new GoogleStrategy.Strategy(
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "/api/google/callback",
   },
-  async function (accessToken, profile, done) {
+  async function (refreshToken, accessToken, profile, done) {
     accessToken = generateJWTToken(profile, "access");
     const existingUser = await Host.findOne({ email: profile.emails[0].value });
     // eslint-disable-next-line no-console
