@@ -24,26 +24,25 @@ export const authController = {
     }
   },
   async authenticateUser(req, res) {
-    const { accessToken, refreshToken } = req.user;
+    const { accessToken } = req.user;
     delete req.user.accessToken;
-    delete req.user.refreshToken;
     const user = JSON.parse(JSON.stringify(req.user));
     const cleanUser = Object.assign({}, user);
     delete cleanUser.password;
     res
-      .cookie("accessToken", `Bearer ${accessToken}`, {
-        httponly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 30,
-      })
-      .cookie("refreshToken", `Bearer ${refreshToken}`, {
-        httponly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 60 * 24,
-      })
-      .json({ user: cleanUser });
+      // .cookie("accessToken", `Bearer ${accessToken}`, {
+      //   httponly: true,
+      //   sameSite: "none",
+      //   secure: true,
+      //   maxAge: 1000 * 60 * 30,
+      // })
+      // .cookie("refreshToken", `Bearer ${refreshToken}`, {
+      //   httponly: true,
+      //   sameSite: "none",
+      //   secure: true,
+      //   maxAge: 1000 * 60 * 60 * 24,
+      // })
+      .json({ user: cleanUser, accessToken });
   },
 
   async authState(req, res) {
@@ -51,6 +50,7 @@ export const authController = {
       return res.status(200).json({
         flag: true,
         user: req.user,
+        cookies: req.cookies,
       });
     }
     return res.status(200).json({
@@ -63,8 +63,8 @@ export const authController = {
     if (req.user) {
       req.session.destroy();
       res.clearCookie("connect.sid");
-      res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
+      // res.clearCookie("accessToken");
+      // res.clearCookie("refreshToken");
       res.json({ message: "User Logged Out Successfully" });
     } else {
       return res.json({ msg: "Please login first!" });
@@ -72,25 +72,19 @@ export const authController = {
   },
 
   async authenticateGoogleUser(req, res) {
-    const { accessToken, refreshToken } = req.user;
+    const { accessToken } = req.user;
     delete req.user.accessToken;
-    delete req.user.refreshToken;
+
     const user = JSON.parse(JSON.stringify(req.user));
     const cleanUser = Object.assign({}, user);
     // delete cleanUser.password;
     res
-      .cookie("accessToken", `Bearer ${accessToken}`, {
+      .cookie("accessToken", `${accessToken}`, {
         httponly: true,
         sameSite: "none",
         secure: true,
         maxAge: 1000 * 60 * 30,
       })
-      .cookie("refreshToken", `Bearer ${refreshToken}`, {
-        httponly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 60 * 24,
-      });
     res.redirect(CLIENT_APP_URL);
   },
 
@@ -102,7 +96,6 @@ export const authController = {
       req.session.destroy();
       res.clearCookie("connect.sid");
       res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
       res.redirect(CLIENT_APP_URL);
     });
   },

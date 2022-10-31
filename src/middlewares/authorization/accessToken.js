@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 import * as Sentry from "@sentry/node";
 
 export const authAccessToken = async function (req, res, next) {
-  if (req.cookies.accessToken) {
-    const accessToken = req.cookies.accessToken.split(" ")[1];
+  if (req.headers.authorization) {
+    // const accessToken = req.cookies.accessToken.split(" ")[1];
+    const accessToken = req.headers.authorization;
     jwt.verify(
       accessToken,
       ACCESS_TOKEN_SECRET_KEY,

@@ -60,7 +60,6 @@ export const eventsController = {
     if (req.user) {
       try {
         const events = await Event.find({ hostId: req.user._id });
-
         res.status(200).json({
           events,
         });
