@@ -12,19 +12,19 @@ export const authAccessToken = async function (req, res, next) {
       ACCESS_TOKEN_SECRET_KEY,
       async (err, userDetails) => {
         try {
-          if (err) res.status(401).json("Invalid token");
+          if (err) return res.status(401).json("Invalid token");
           const { payload } = userDetails;
           const user =
             (await Host.findById(payload._id)) ||
             (await Host.find({ "google.googleId": payload.id }));
           if (!user) {
             Sentry.captureMessage("Invalid user details", "warning");
-            res.status(400).json("Invalid user details");
+            return res.status(400).json("Invalid user details");
           }
           next();
         } catch (e) {
           Sentry.captureException(e);
-          res.status(400).json("Try after sometime");
+          return res.status(400).json("Try after sometime");
         }
       },
     );
