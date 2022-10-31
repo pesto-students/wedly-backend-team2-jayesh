@@ -6,7 +6,6 @@ import * as Sentry from "@sentry/node";
 
 export const authAccessToken = async function (req, res, next) {
   if (req.headers.authorization) {
-    // const accessToken = req.cookies.accessToken.split(" ")[1];
     const accessToken = req.headers.authorization;
     jwt.verify(
       accessToken,

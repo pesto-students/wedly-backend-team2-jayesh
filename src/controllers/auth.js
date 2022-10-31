@@ -24,8 +24,9 @@ export const authController = {
     }
   },
   async authenticateUser(req, res) {
-    const { accessToken } = req.user;
+    const { accessToken, refreshToken } = req.user;
     delete req.user.accessToken;
+    delete req.user.refreshToken;
     const user = JSON.parse(JSON.stringify(req.user));
     const cleanUser = Object.assign({}, user);
     delete cleanUser.password;
@@ -42,11 +43,11 @@ export const authController = {
       //   secure: true,
       //   maxAge: 1000 * 60 * 60 * 24,
       // })
-      .json({ user: cleanUser, accessToken });
+      .json({ user: cleanUser, accessToken, refreshToken });
   },
 
   async authState(req, res) {
-    if (req.user) {
+    if (req.isAuthenticated()) {
       return res.status(200).json({
         flag: true,
         user: req.user,
@@ -72,18 +73,25 @@ export const authController = {
   },
 
   async authenticateGoogleUser(req, res) {
-    const { accessToken } = req.user;
+    const { accessToken, refreshToken } = req.user;
     delete req.user.accessToken;
-
+    delete req.user.refreshToken;
     const user = JSON.parse(JSON.stringify(req.user));
     const cleanUser = Object.assign({}, user);
     // delete cleanUser.password;
-    res.cookie("accessToken", `${accessToken}`, {
-      httponly: true,
-      sameSite: "none",
-      secure: true,
-      maxAge: 1000 * 60 * 30,
-    });
+    res
+      .cookie("accessToken", `Bearer ${accessToken}`, {
+        httponly: true,
+        sameSite: "none",
+        secure: true,
+        maxAge: 1000 * 60 * 30,
+      })
+      .cookie("refreshToken", `Bearer ${refreshToken}`, {
+        httponly: true,
+        sameSite: "none",
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24,
+      });
     res.redirect(CLIENT_APP_URL);
   },
 
@@ -94,6 +102,7 @@ export const authController = {
       }
       req.session.destroy();
       res.clearCookie("connect.sid");
+      res.clearCookie("refreshToken");
       res.clearCookie("accessToken");
       res.redirect(CLIENT_APP_URL);
     });

@@ -22,7 +22,8 @@ const strategy = new LocalStrategy(
           const payload = user[0];
           payload.local.password = undefined;
           const accessToken = generateJWTToken(payload, "access");
-          return done(null, { payload, accessToken });
+          const refreshToken = generateJWTToken(payload, "refresh");
+          return done(null, { payload, accessToken, refreshToken });
         } else {
           return done(null, false, "Incorrect password");
         }
