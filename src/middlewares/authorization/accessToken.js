@@ -21,6 +21,7 @@ export const authAccessToken = async function (req, res, next) {
             Sentry.captureMessage("Invalid user details", "warning");
             res.status(400).json("Invalid user details");
           }
+          req.user=user;
           next();
         } catch (e) {
           Sentry.captureException(e);

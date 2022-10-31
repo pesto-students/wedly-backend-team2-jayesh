@@ -39,7 +39,7 @@ router.post(
 router.post("/logout", authController.logout);
 router.get("/verify/mail", authValidation, authController.verifyEmail);
 
-router.get("/authState", authController.authState);
+router.get("/authState", authAccessToken, authController.authState);
 
 router.get(
   "/google",
