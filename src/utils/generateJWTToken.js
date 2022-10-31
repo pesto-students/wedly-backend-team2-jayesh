@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_SECRET_KEY } from "../../config/index.js";
+import {
+  ACCESS_TOKEN_SECRET_KEY,
+  REFRESH_TOKEN_SECRET_KEY,
+} from "../../config/index.js";
 
 const properties = {
   access: {
@@ -7,6 +10,12 @@ const properties = {
       expiresIn: "1 hour",
     },
     secretKey: ACCESS_TOKEN_SECRET_KEY,
+  },
+  refresh: {
+    options: {
+      expiresIn: "1 day",
+    },
+    secretKey: REFRESH_TOKEN_SECRET_KEY,
   },
 };
 
