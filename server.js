@@ -66,6 +66,7 @@ app.use(
       secure: true,
       httpOnly: true,
       sameSite: "none",
+      domain:"https://wedly-frontend.netlify.app"
     },
   }),
 );
