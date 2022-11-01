@@ -20,4 +20,5 @@ export const {
   EMAIL_CLIENT_ID,
   RAZORPAY_TEST_ID,
   RAZORPAY_TEST_SECRET,
+  WHATSAPP_TOKEN,
 } = process.env;

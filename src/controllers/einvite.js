@@ -1,5 +1,8 @@
+/* eslint-disable no-console */
 import { EinviteFirstPage } from "../models/EinviteFirstPage.js";
 import { EinviteOtherPages } from "../models/EinviteOtherPages.js";
+import { WHATSAPP_TOKEN, CLIENT_APP_URL } from "../../config/index.js";
+import axios from "axios";
 
 export const einviteController = {
   async addFirstPage(req, res) {
@@ -14,7 +17,7 @@ export const einviteController = {
           groom,
           date,
           hostId,
-          templateID
+          templateID,
         });
         try {
           const addedContent = await einviteFirstPage.save();
@@ -36,7 +39,7 @@ export const einviteController = {
                 bride,
                 groom,
                 date,
-                templateID
+                templateID,
               },
               { new: true },
             );
@@ -58,7 +61,8 @@ export const einviteController = {
   },
   async addOtherPages(req, res) {
     if (req.user) {
-      const { category, customEvent, date, time, venue, page, templateID } = req.body;
+      const { category, customEvent, date, time, venue, page, templateID } =
+        req.body;
       const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
 
       const otherPages = await EinviteOtherPages.find({ hostId, page });
@@ -71,7 +75,7 @@ export const einviteController = {
           venue,
           page,
           hostId,
-          templateID
+          templateID,
         });
         try {
           const addedContent = await einviteOtherPages.save();
@@ -94,7 +98,7 @@ export const einviteController = {
               date,
               time,
               venue,
-              templateID
+              templateID,
             },
             { new: true },
           );
@@ -137,7 +141,10 @@ export const einviteController = {
   async getOtherPages(req, res) {
     const { hostID, page } = req.params;
     try {
-      const response = await EinviteOtherPages.find({ hostId: hostID, page: parseInt(page) });
+      const response = await EinviteOtherPages.find({
+        hostId: hostID,
+        page: parseInt(page),
+      });
       const einviteOtherPages = response[0];
       if (response.length !== 0) {
         return res.status(200).json({
@@ -153,11 +160,15 @@ export const einviteController = {
     }
   },
 
-  async getGuestEinvite(req,res){
+  async getGuestEinvite(req, res) {
     const { hostID } = req.params;
     try {
-      const einviteOtherPages = await EinviteOtherPages.find({ hostId: hostID });
-      const einviteFirstPage = await EinviteFirstPage.findOne({ hostId: hostID });
+      const einviteOtherPages = await EinviteOtherPages.find({
+        hostId: hostID,
+      });
+      const einviteFirstPage = await EinviteFirstPage.findOne({
+        hostId: hostID,
+      });
       const einvite = [...einviteOtherPages, einviteFirstPage];
       if (einvite.length !== 0) {
         return res.status(200).json({
@@ -171,5 +182,123 @@ export const einviteController = {
     } catch (err) {
       return res.status(500).json({ message: "Something went wrong!", err });
     }
-  }
+  },
+
+  async sendReminder(req, res) {
+    const requestURL = `https://graph.facebook.com/v15.0/109962048563832/messages`;
+    const { guestsArray, hostName, eventDetails } = req.body;
+    try {
+      for (let guest of guestsArray) {
+        await axios.post(
+          requestURL,
+          {
+            messaging_product: "whatsapp",
+            to: `91${guest.mobile}`,
+            type: "template",
+            template: {
+              name: "event",
+              language: {
+                code: "en",
+              },
+              components: [
+                {
+                  type: "body",
+                  parameters: [
+                    {
+                      type: "text",
+                      text: `${guest.name}`,
+                    },
+                    {
+                      type: "text",
+                      text: `${hostName}`,
+                    },
+                    {
+                      type: "text",
+                      text: `${
+                        eventDetails.category || eventDetails.customEvent
+                      }`,
+                    },
+                    {
+                      type: "text",
+                      text: `${eventDetails.date
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("-")}`,
+                    },
+                    {
+                      type: "text",
+                      text: `${eventDetails.time}`,
+                    },
+                    {
+                      type: "text",
+                      text: `${eventDetails.venue}`,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+      }
+      res.status(200).json("Reminders were sent successfully");
+    } catch (err) {
+      res.status(500).json("Something went wrong", err);
+    }
+  },
+
+  async sendInvite(req, res) {
+    const requestURL = `https://graph.facebook.com/v15.0/109962048563832/messages`;
+    const { from, to, mobile, userId } = req.body;
+    try {
+      await axios.post(
+        requestURL,
+        {
+          messaging_product: "whatsapp",
+          to: `91${mobile}`,
+          type: "template",
+          template: {
+            name: "e_invite",
+            language: {
+              code: "en",
+            },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  {
+                    type: "text",
+                    text: `${to}`,
+                  },
+                  {
+                    type: "text",
+                    text: `${from}`,
+                  },
+                  {
+                    type: "text",
+                    text: `${CLIENT_APP_URL}/einvite/view/${userId}`,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${WHATSAPP_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      res.status(200).json("Invite sent successfully");
+    } catch (err) {
+      res.status(500).json("Something went wrong", err);
+    }
+  },
 };

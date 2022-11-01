@@ -62,7 +62,6 @@ export const eventsController = {
     if (req.user) {
       try {
         const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
-        console.log(hostId);
         const events = await Event.find({
           hostId: hostId,
         });

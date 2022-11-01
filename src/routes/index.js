@@ -39,9 +39,7 @@ router.post(
 router.post("/logout", authController.logout);
 router.get("/verify/mail", authValidation, authController.verifyEmail);
 
-router.get("/authState",
- authAccessToken, 
- authController.authState);
+router.get("/authState", authAccessToken, authController.authState);
 
 router.get(
   "/google",
@@ -130,6 +128,9 @@ router.post(
 router.get("/otherpageseinvite/:hostID/:page", einviteController.getOtherPages);
 
 router.get("/guesteinvite/:hostID", einviteController.getGuestEinvite);
+
+router.post("/sendReminder", einviteController.sendReminder);
+router.post("/sendInvite", einviteController.sendInvite);
 
 router.post("/eaashirvaad", eaashirvaadController.sendPayment);
 router.post("/eaashirvaad/verify", eaashirvaadController.verifyPayment);
