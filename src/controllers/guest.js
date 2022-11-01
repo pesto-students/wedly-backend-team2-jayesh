@@ -6,13 +6,13 @@ export const guestsController = {
   async addSingleGuest(req, res) {
     if (req.user) {
       const { name, mobile, email, isInvited } = req.body;
-
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
       const guest = new Guest({
         name,
         mobile,
         email,
         isInvited,
-        hostId: req.user._id,
+        hostId: hostId,
       });
 
       try {
@@ -32,9 +32,10 @@ export const guestsController = {
 
   async addMultipleGuests(req, res) {
     if (req.user) {
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
       const arrayOfGuests = req.body;
       arrayOfGuests.map((Guest) => {
-        Guest["hostId"] = req.user._id;
+        Guest["hostId"] = hostId;
       });
       try {
         const addedGuests = await Guest.insertMany(arrayOfGuests);
@@ -58,7 +59,10 @@ export const guestsController = {
   async getAllGuests(req, res) {
     if (req.user) {
       try {
-        const guests = await Guest.find({ hostId: req.user._id });
+        const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
+        const guests = await Guest.find({
+          hostId: hostId,
+        });
 
         res.status(200).json({
           guests,

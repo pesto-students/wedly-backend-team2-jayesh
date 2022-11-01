@@ -5,15 +5,16 @@ import { Event } from "../models/Event.js";
 export const eventsController = {
   async addSingleEvent(req, res) {
     if (req.user) {
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
       const { category, customEvent, date, time, venue } = req.body;
-
+      // console.log(req.user._id, "Adding");
       const event = new Event({
         category,
         customEvent,
         date,
         time,
         venue,
-        hostId: req.user._id,
+        hostId: hostId,
       });
 
       try {
@@ -33,9 +34,10 @@ export const eventsController = {
 
   async addMultipleEvents(req, res) {
     if (req.user) {
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
       const arrayOfEvents = req.body;
       arrayOfEvents.map((event) => {
-        event["hostId"] = req.user._id;
+        event["hostId"] = hostId;
       });
       try {
         const addedEvents = await Event.insertMany(arrayOfEvents);
@@ -59,7 +61,11 @@ export const eventsController = {
   async getAllEvents(req, res) {
     if (req.user) {
       try {
-        const events = await Event.find({ hostId: req.user._id });
+        const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
+        console.log(hostId);
+        const events = await Event.find({
+          hostId: hostId,
+        });
         res.status(200).json({
           events,
         });

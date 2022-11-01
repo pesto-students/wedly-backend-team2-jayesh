@@ -5,7 +5,7 @@ export const einviteController = {
   async addFirstPage(req, res) {
     if (req.user) {
       const { bride, groom, date, templateID } = req.body;
-      const hostId = req.user._id;
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
 
       const existingFirstPage = await EinviteFirstPage.find({ hostId });
       if (existingFirstPage.length === 0) {
@@ -59,7 +59,7 @@ export const einviteController = {
   async addOtherPages(req, res) {
     if (req.user) {
       const { category, customEvent, date, time, venue, page, templateID } = req.body;
-      const hostId = req.user._id;
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
 
       const otherPages = await EinviteOtherPages.find({ hostId, page });
       if (otherPages.length === 0) {

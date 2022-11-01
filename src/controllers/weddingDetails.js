@@ -18,10 +18,14 @@ export const weddingDetailsController = {
         groomState,
         groomCity,
       } = req.body;
-
+      const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
       try {
-        const existingBride = await Bride.find({ hostId: req.user._id });
-        const existingGroom = await Groom.find({ hostId: req.user._id });
+        const existingBride = await Bride.find({
+          hostId: hostId,
+        });
+        const existingGroom = await Groom.find({
+          hostId: hostId,
+        });
         if (existingBride.length === 0 && existingGroom.length === 0) {
           const bride = new Bride({
             name: brideName,
@@ -29,7 +33,7 @@ export const weddingDetailsController = {
             motherName: brideMotherName,
             city: brideCity,
             state: brideState,
-            hostId: req.user._id,
+            hostId: hostId,
           });
 
           const groom = new Groom({
@@ -38,7 +42,7 @@ export const weddingDetailsController = {
             motherName: groomMotherName,
             city: groomCity,
             state: groomState,
-            hostId: req.user._id,
+            hostId: hostId,
           });
           const newBride = await bride.save();
           const newGroom = await groom.save();
@@ -49,27 +53,27 @@ export const weddingDetailsController = {
           });
         } else {
           const updatedBride = await Bride.findOneAndUpdate(
-            { hostId: req.user._id },
+            { hostId: hostId },
             {
               name: brideName,
               fatherName: brideFatherName,
               motherName: brideMotherName,
               city: brideCity,
               state: brideState,
-              hostId: req.user._id,
+              hostId: hostId,
             },
             { new: true },
           );
 
           const updatedGroom = await Groom.findOneAndUpdate(
-            { hostId: req.user._id },
+            { hostId: hostId },
             {
               name: groomName,
               fatherName: groomFatherName,
               motherName: groomMotherName,
               city: groomCity,
               state: groomState,
-              hostId: req.user._id,
+              hostId: hostId,
             },
             { new: true },
           );
@@ -94,8 +98,13 @@ export const weddingDetailsController = {
   async getDetails(req, res) {
     if (req.user) {
       try {
-        const bride = await Bride.findOne({ hostId: req.user._id });
-        const groom = await Groom.findOne({ hostId: req.user._id });
+        const hostId = req.user._id ? req.user._id : req.user[0]["_id"];
+        const bride = await Bride.findOne({
+          hostId: hostId,
+        });
+        const groom = await Groom.findOne({
+          hostId: hostId,
+        });
 
         res.status(200).json({
           bride,
