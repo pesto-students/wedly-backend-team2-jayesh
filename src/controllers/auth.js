@@ -78,21 +78,21 @@ export const authController = {
     delete req.user.refreshToken;
     const user = JSON.parse(JSON.stringify(req.user));
     const cleanUser = Object.assign({}, user);
-    // delete cleanUser.password;
-    res
-      .cookie("accessToken", `Bearer ${accessToken}`, {
-        httponly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 30,
-      })
-      .cookie("refreshToken", `Bearer ${refreshToken}`, {
-        httponly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 60 * 24,
-      });
-    res.redirect(CLIENT_APP_URL);
+    delete cleanUser.password;
+    // res
+    //   .cookie("accessToken", `Bearer ${accessToken}`, {
+    //     httponly: true,
+    //     sameSite: "none",
+    //     secure: true,
+    //     maxAge: 1000 * 60 * 30,
+    //   })
+    //   .cookie("refreshToken", `Bearer ${refreshToken}`, {
+    //     httponly: true,
+    //     sameSite: "none",
+    //     secure: true,
+    //     maxAge: 1000 * 60 * 60 * 24,
+    //   });
+    res.redirect(`${CLIENT_APP_URL}?accessToken=${accessToken}`);
   },
 
   async logoutGoogleUser(req, res, next) {

@@ -57,7 +57,6 @@ app.use(
       uri: DATABASE_URL,
       databaseName: "test",
       collection: "session",
-      
     }),
     secret: APP_SECRET || "this is the default passphrase",
     resave: false,
@@ -66,7 +65,6 @@ app.use(
       secure: true,
       httpOnly: true,
       sameSite: "none",
-      domain:"https://wedly-frontend.netlify.app"
     },
   }),
 );
