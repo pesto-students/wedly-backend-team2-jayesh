@@ -46,7 +46,7 @@ HostSchema.pre("save", async function (next) {
 });
 
 HostSchema.post("save", async function (doc) {
-  if (doc.email && !doc.google) {
+  if (doc.email && doc.local) {
     const queryParams = `id=${doc["_id"]}&hashedString=${doc.local.password}`;
     const linkToRedirect = `${APP_URL}/api/verify/mail?${queryParams}`;
     await sendMail(
