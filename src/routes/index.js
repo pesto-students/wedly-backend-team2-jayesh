@@ -126,7 +126,6 @@ router.post(
   einviteController.addOtherPages,
 );
 router.get("/otherpageseinvite/:hostID/:page", einviteController.getOtherPages);
-
 router.get("/guesteinvite/:hostID", einviteController.getGuestEinvite);
 
 router.post("/sendReminder", einviteController.sendReminder);

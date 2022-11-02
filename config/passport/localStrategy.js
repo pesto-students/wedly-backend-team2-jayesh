@@ -14,9 +14,14 @@ const strategy = new LocalStrategy(
     try {
       let user;
       user = await Host.find({ email });
+      // if (!user[0].isVerified) {
+      //   return done(null, { message: "Please verify your email to login" });
+      // }
       if (user.length === 0) {
         Sentry.captureMessage("Email is not registered", "warning");
-        return done(null, false, "Email is not registered");
+        return done(null, { message: "Email is not registered" });
+      } else if (!user[0].isVerified) {
+        return done(null, { message: "Please verify your email to login" });
       } else {
         if (await bcrypt.compare(password, user[0].local.password)) {
           const payload = user[0];
@@ -25,7 +30,7 @@ const strategy = new LocalStrategy(
           const refreshToken = generateJWTToken(payload, "refresh");
           return done(null, { payload, accessToken, refreshToken });
         } else {
-          return done(null, false, "Incorrect password");
+          return done(null, { message: "Incorrect password" });
         }
       }
     } catch (error) {
