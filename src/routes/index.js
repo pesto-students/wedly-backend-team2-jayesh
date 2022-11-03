@@ -40,6 +40,11 @@ router.post("/logout", authController.logout);
 router.get("/verify/mail", authValidation, authController.verifyEmail);
 
 router.get("/authState", authAccessToken, authController.authState);
+router.post(
+  "/updateUser",
+  // authAccessToken,
+  authController.updateUser,
+);
 
 router.get(
   "/google",

@@ -2,6 +2,8 @@
 import { CLIENT_APP_URL } from "../../config/index.js";
 import { Host } from "../models/Host.js";
 import * as Sentry from "@sentry/node";
+import bcrypt from "bcrypt";
+import hashPassword from "../utils/hashPassword.js";
 
 /* eslint-disable no-console */
 export const authController = {
@@ -97,5 +99,39 @@ export const authController = {
       res.clearCookie("accessToken");
       res.redirect(CLIENT_APP_URL);
     });
+  },
+
+  async updateUser(req, res) {
+    if (req.user) {
+      const { email, updatedName, oldPassword, newPassword } = req.body;
+      try {
+        const user = await Host.find({ email });
+        const updateObj = {};
+        updateObj["name"] = updatedName;
+        if (oldPassword !== "") {
+          if (await bcrypt.compare(oldPassword, user[0].local.password)) {
+            updateObj["local.password"] = await hashPassword(newPassword);
+          } else {
+            return res
+              .status(401)
+              .json({ message: "Wrong existing password provided" });
+          }
+        }
+        const updatedUser = await Host.findOneAndUpdate(
+          { email: email },
+          updateObj,
+          { new: true },
+        );
+        res
+          .status(200)
+          .json({ message: "User updated successfully", updatedUser });
+      } catch (err) {
+        res.status(500).json({ message: "Something went wrong!" });
+      }
+    } else {
+      res
+        .status(401)
+        .json({ message: "Please login first to edit user details" });
+    }
   },
 };
