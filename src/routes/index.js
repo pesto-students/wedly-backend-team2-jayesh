@@ -42,7 +42,7 @@ router.get("/verify/mail", authValidation, authController.verifyEmail);
 router.get("/authState", authAccessToken, authController.authState);
 router.post(
   "/updateUser",
-  // authAccessToken,
+  authAccessToken,
   authController.updateUser,
 );
 
